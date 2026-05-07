@@ -9,7 +9,6 @@ const ctrl = new CompilerController();
 
 router.post(
   '/execute',
-  authenticate,
   [
     body('language').isIn(['c', 'cpp', 'java', 'python', 'javascript', 'typescript', 'go', 'rust']),
     body('source_code').notEmpty().isLength({ max: 65536 }),
@@ -19,7 +18,7 @@ router.post(
   ctrl.execute
 );
 
-router.get('/status/:token', authenticate, ctrl.getStatus);
+router.get('/status/:token', ctrl.getStatus);
 router.get('/languages', ctrl.getSupportedLanguages);
 
 export default router;
