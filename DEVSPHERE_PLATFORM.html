@@ -1,0 +1,496 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DevSphere Academy</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{--bg:#0b0f1a;--bg2:#111827;--bg3:#1a2235;--card:#141d30;--accent:#4f8ef7;--violet:#7c5af7;--teal:#00c9a7;--green:#22c55e;--amber:#f59e0b;--red:#ef4444;--text:#e2e8f5;--text2:#8a9bc4;--text3:#4a5d8a;--border:#1e2d4a;--border2:#263557;--easy:#22c55e;--medium:#f59e0b;--hard:#ef4444}
+body{background:var(--bg);color:var(--text);font-family:system-ui,-apple-system,sans-serif;min-height:100vh;overflow-x:hidden}
+.mono{font-family:'Courier New',Consolas,monospace}
+nav{display:flex;align-items:center;gap:0;background:rgba(11,15,26,.97);border-bottom:1px solid var(--border);padding:0 16px;height:52px;position:sticky;top:0;z-index:50;justify-content:space-between}
+.logo{font-weight:800;font-size:18px;background:linear-gradient(135deg,#4f8ef7,#7c5af7,#00c9a7);-webkit-background-clip:text;-webkit-text-fill-color:transparent;cursor:pointer;letter-spacing:-.3px}
+.nav-tabs{display:flex;gap:2px;flex:1;margin:0 14px;overflow-x:auto;scrollbar-width:none}
+.nav-tabs::-webkit-scrollbar{display:none}
+.ntab{padding:5px 11px;border-radius:6px;font-size:12px;font-weight:500;color:var(--text2);cursor:pointer;border:none;background:none;transition:.15s;white-space:nowrap}
+.ntab:hover{color:var(--text);background:var(--bg3)}
+.ntab.active{color:var(--accent);background:rgba(79,142,247,.12);border:1px solid rgba(79,142,247,.2)}
+.nav-right{display:flex;gap:8px}
+.btn{padding:5px 14px;border-radius:6px;font-size:12px;font-weight:600;cursor:pointer;border:none;transition:.15s}
+.btn-ghost{background:transparent;color:var(--text2);border:1px solid var(--border2)}
+.btn-primary{background:linear-gradient(135deg,var(--accent),var(--violet));color:#fff}
+.btn:hover{opacity:.85;transform:translateY(-1px)}
+.page{display:none}.page.on{display:block}
+.hero{padding:60px 24px 40px;text-align:center;position:relative;overflow:hidden}
+.hero-glow{position:absolute;inset:0;background:radial-gradient(ellipse 70% 50% at 50% 0,rgba(79,142,247,.14),transparent 65%);pointer-events:none}
+.hero h1{font-size:clamp(28px,5vw,54px);font-weight:800;line-height:1.1;margin-bottom:16px;letter-spacing:-.5px}
+.grad{background:linear-gradient(135deg,#4f8ef7,#7c5af7 45%,#00c9a7);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.hero p{font-size:15px;color:var(--text2);max-width:560px;margin:0 auto 28px;line-height:1.7}
+.hero-btns{display:flex;gap:12px;justify-content:center;flex-wrap:wrap}
+.hbtn{padding:11px 26px;border-radius:10px;font-size:13px;font-weight:700;cursor:pointer;border:none;transition:.2s}
+.hbtn-p{background:linear-gradient(135deg,#4f8ef7,#7c5af7);color:#fff}
+.hbtn-s{background:transparent;color:var(--text);border:1px solid var(--border2)}
+.hbtn:hover{transform:translateY(-2px)}
+.announce{display:inline-block;background:rgba(79,142,247,.12);color:var(--accent);border:1px solid rgba(79,142,247,.25);padding:4px 14px;border-radius:20px;font-size:11px;font-weight:700;margin-bottom:20px}
+.stats-bar{display:flex;justify-content:center;gap:40px;padding:20px;border-top:1px solid var(--border);border-bottom:1px solid var(--border);flex-wrap:wrap}
+.stat-num{font-size:28px;font-weight:800;background:linear-gradient(135deg,#4f8ef7,#00c9a7);-webkit-background-clip:text;-webkit-text-fill-color:transparent;text-align:center}
+.stat-lbl{font-size:11px;color:var(--text2);text-align:center;margin-top:2px}
+.section{padding:28px 20px}
+.section-title{font-size:20px;font-weight:800;margin-bottom:18px}
+.section-title span{color:var(--accent)}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:12px}
+.card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:16px;cursor:pointer;transition:.2s}
+.card:hover{border-color:var(--accent);transform:translateY(-2px)}
+.card-icon{font-size:24px;margin-bottom:10px}
+.card-title{font-size:13px;font-weight:700;margin-bottom:4px}
+.card-desc{font-size:11px;color:var(--text2);line-height:1.5}
+.badge{padding:2px 8px;border-radius:20px;font-size:10px;font-weight:700}
+.badge-green{background:rgba(34,197,94,.15);color:#22c55e}
+.badge-violet{background:rgba(124,90,247,.15);color:#7c5af7}
+.lang-layout{display:grid;grid-template-columns:220px 1fr;min-height:calc(100vh - 52px)}
+.sidebar{background:var(--card);border-right:1px solid var(--border);padding:12px 0;overflow-y:auto}
+.sb-section{padding:6px 14px;font-size:10px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.1em;margin-top:8px}
+.sb-item{padding:7px 14px;font-size:12px;color:var(--text2);cursor:pointer;display:flex;align-items:center;gap:8px;border-left:3px solid transparent;transition:.1s}
+.sb-item:hover{color:var(--text);background:var(--bg3)}
+.sb-item.on{color:var(--accent);background:rgba(79,142,247,.08);border-left-color:var(--accent)}
+.sb-dot{width:5px;height:5px;border-radius:50%;background:var(--text3);flex-shrink:0}
+.sb-item.on .sb-dot{background:var(--accent)}
+.sb-item.done .sb-dot{background:var(--green)}
+.content{padding:24px 32px;overflow-y:auto}
+.topic-head h2{font-size:22px;font-weight:800;margin-bottom:8px}
+.topic-head p{color:var(--text2);font-size:13px;line-height:1.7;max-width:640px;margin-bottom:20px}
+.bread{font-size:11px;color:var(--text3);margin-bottom:8px}
+.code-block{background:#0a1220;border:1px solid var(--border2);border-radius:10px;overflow:hidden;margin:16px 0}
+.code-head{display:flex;align-items:center;justify-content:space-between;padding:8px 14px;background:var(--bg3);border-bottom:1px solid var(--border)}
+.lang-badge{font-size:10px;font-weight:700;padding:2px 8px;border-radius:4px;background:rgba(79,142,247,.2);color:var(--accent)}
+.code-body{padding:14px;font-size:12.5px;line-height:1.8;overflow-x:auto;color:#abb2bf;font-family:'Courier New',monospace}
+.kw{color:#c678dd}.fn{color:#61afef}.str{color:#98c379}.num{color:#d19a66}.cm{color:#5c6370;font-style:italic}.tp{color:#e5c07b}
+.out-block{background:var(--bg3);border:1px solid var(--border);border-radius:8px;padding:12px;margin:8px 0;font-family:'Courier New',monospace;font-size:12px}
+.out-lbl{font-size:10px;color:var(--green);font-weight:700;margin-bottom:6px}
+.concept{background:rgba(79,142,247,.06);border:1px solid rgba(79,142,247,.2);border-radius:10px;padding:14px;margin:14px 0}
+.concept h4{color:var(--accent);font-size:12px;font-weight:700;margin-bottom:6px}
+.concept p{font-size:12px;color:var(--text2);line-height:1.6}
+.quiz{background:rgba(0,201,167,.05);border:1px solid rgba(0,201,167,.2);border-radius:10px;padding:14px;margin:20px 0}
+.quiz h4{color:var(--teal);font-size:12px;font-weight:700;margin-bottom:10px}
+.qopt{padding:7px 12px;border-radius:6px;border:1px solid var(--border);margin:5px 0;cursor:pointer;font-size:12px;transition:.15s}
+.qopt:hover{border-color:var(--accent);background:rgba(79,142,247,.08)}
+.qopt.correct{background:rgba(34,197,94,.12);border-color:var(--green);color:var(--green)}
+.qopt.wrong{background:rgba(239,68,68,.08);border-color:var(--red);color:var(--red)}
+.nav-btns{display:flex;gap:10px;margin-top:24px;padding-top:16px;border-top:1px solid var(--border)}
+.nbtn{padding:7px 16px;border-radius:8px;font-size:12px;font-weight:600;cursor:pointer;border:1px solid var(--border2);background:transparent;color:var(--text2);transition:.15s}
+.nbtn:hover{color:var(--text)}
+.nbtn-p{background:linear-gradient(135deg,var(--accent),var(--violet));color:#fff;border:none}
+.compiler-layout{display:grid;grid-template-columns:1fr 1fr;height:calc(100vh - 52px)}
+.editor-pane,.output-pane{display:flex;flex-direction:column;overflow:hidden}
+.pane-toolbar{background:var(--card);border-bottom:1px solid var(--border);padding:8px 14px;display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.lang-sel{background:var(--bg3);color:var(--text);border:1px solid var(--border);border-radius:6px;padding:5px 10px;font-size:12px;cursor:pointer;outline:none}
+.run-btn{background:linear-gradient(135deg,var(--green),#16a34a);color:#fff;border:none;padding:6px 18px;border-radius:6px;font-size:12px;font-weight:700;cursor:pointer;transition:.15s}
+.run-btn:hover{transform:translateY(-1px)}
+.run-btn:disabled{opacity:.6;pointer-events:none}
+.ghost-btn{background:transparent;color:var(--text2);border:1px solid var(--border);border-radius:6px;padding:6px 12px;font-size:12px;cursor:pointer}
+.editor-area{flex:1;overflow:hidden;position:relative}
+.editor-ta{width:100%;height:100%;background:#0a1220;color:#abb2bf;border:none;outline:none;padding:14px 14px 14px 52px;font-family:'Courier New',monospace;font-size:13px;line-height:1.8;resize:none;tab-size:2}
+.line-nums{position:absolute;left:0;top:0;width:40px;padding:14px 6px;font-family:'Courier New',monospace;font-size:13px;line-height:1.8;color:var(--text3);text-align:right;background:#0a1220;border-right:1px solid var(--border);pointer-events:none;user-select:none;white-space:pre}
+.output-pane{background:var(--card);border-left:1px solid var(--border)}
+.out-tabs{display:flex;border-bottom:1px solid var(--border);background:var(--bg3)}
+.otab{padding:7px 14px;font-size:12px;font-weight:500;cursor:pointer;color:var(--text2);border-bottom:2px solid transparent;transition:.15s}
+.otab.on{color:var(--accent);border-bottom-color:var(--accent)}
+.out-console{flex:1;overflow-y:auto;padding:14px;font-family:'Courier New',monospace;font-size:12.5px;line-height:1.8;color:#abb2bf}
+.con-out{color:#98c379}.con-err{color:#e06c75}.con-sys{color:#5c6370}
+.stdin-area{border-top:1px solid var(--border);padding:10px;background:var(--bg3)}
+.stdin-lbl{font-size:10px;color:var(--text3);font-weight:700;margin-bottom:6px;text-transform:uppercase;letter-spacing:.05em}
+.stdin-ta{width:100%;background:var(--bg2);color:var(--text);border:1px solid var(--border);border-radius:6px;padding:6px 8px;font-family:'Courier New',monospace;font-size:12px;resize:none;height:52px;outline:none}
+.prob-filters{display:flex;gap:8px;padding:12px 16px;border-bottom:1px solid var(--border);flex-wrap:wrap;align-items:center}
+.filt{padding:4px 12px;border-radius:20px;font-size:11px;font-weight:600;cursor:pointer;border:1px solid var(--border);background:transparent;color:var(--text2);transition:.15s}
+.filt:hover,.filt.on{border-color:var(--accent);color:var(--accent);background:rgba(79,142,247,.1)}
+.search-box{background:var(--card);border:1px solid var(--border);border-radius:8px;padding:6px 12px;font-size:12px;color:var(--text);outline:none;width:200px;margin-left:auto}
+.search-box::placeholder{color:var(--text3)}
+.prob-table{width:100%;border-collapse:collapse}
+.prob-table th{padding:8px 14px;text-align:left;font-size:10px;font-weight:700;color:var(--text3);border-bottom:1px solid var(--border);text-transform:uppercase;letter-spacing:.08em}
+.prob-table td{padding:9px 14px;border-bottom:1px solid rgba(30,45,74,.5);font-size:12px}
+.prob-table tr:hover td{background:rgba(26,37,64,.5)}
+.prob-link{color:var(--text);cursor:pointer;font-weight:500}
+.prob-link:hover{color:var(--accent)}
+.diff{padding:2px 8px;border-radius:4px;font-size:10px;font-weight:700}
+.diff-easy{background:rgba(34,197,94,.12);color:var(--easy)}
+.diff-med{background:rgba(245,158,11,.12);color:var(--medium)}
+.diff-hard{background:rgba(239,68,68,.12);color:var(--hard)}
+.chip{display:inline-block;padding:1px 7px;border-radius:20px;font-size:10px;background:var(--bg3);color:var(--text2);border:1px solid var(--border);margin:1px}
+.status-dot{width:18px;height:18px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:9px}
+.s-done{background:rgba(34,197,94,.15);color:var(--green)}
+.s-todo{background:var(--bg3);color:var(--text3)}
+.modal-wrap{display:none;position:fixed;inset:0;background:rgba(0,0,0,.9);z-index:100;overflow:auto}
+.modal-wrap.open{display:block}
+.solve-shell{background:var(--bg);min-height:100vh;display:flex;flex-direction:column}
+.modal-bar{display:flex;align-items:center;gap:12px;padding:8px 14px;border-bottom:1px solid var(--border);flex-shrink:0}
+.back-btn{background:transparent;border:1px solid var(--border);color:var(--text2);border-radius:6px;padding:4px 12px;cursor:pointer;font-size:11px}
+.solve-grid{display:grid;grid-template-columns:380px 1fr;flex:1;min-height:calc(100vh - 120px)}
+.prob-desc{overflow-y:auto;background:var(--card);border-right:1px solid var(--border)}
+.prob-hdr{padding:16px;border-bottom:1px solid var(--border)}
+.prob-hdr h3{font-size:15px;font-weight:700;margin-bottom:8px}
+.prob-body{padding:16px;font-size:12.5px;line-height:1.8;color:var(--text2)}
+.prob-body h4{color:var(--text);font-weight:700;margin:12px 0 6px;font-size:12.5px}
+.ex-box{background:var(--bg3);border-radius:6px;padding:10px 12px;margin:6px 0;font-family:'Courier New',monospace;font-size:11.5px;color:#abb2bf;border-left:2px solid var(--accent)}
+.solve-pane{display:flex;flex-direction:column}
+.solve-toolbar{display:flex;align-items:center;gap:10px;padding:8px 14px;background:var(--card);border-bottom:1px solid var(--border);flex-shrink:0}
+.solve-ta{flex:1;background:#0a1220;color:#abb2bf;border:none;outline:none;padding:14px;font-family:'Courier New',monospace;font-size:12.5px;line-height:1.8;resize:none;min-height:400px}
+.result-pane{min-height:140px;background:var(--card);border-top:1px solid var(--border);overflow-y:auto;padding:12px;flex-shrink:0}
+.r-pass{color:var(--green);font-weight:700;font-size:13px;margin-bottom:6px}
+.r-fail{color:var(--red);font-weight:700;font-size:13px;margin-bottom:6px}
+.tc-row{display:flex;align-items:center;gap:8px;font-family:'Courier New',monospace;font-size:11px;padding:2px 0;color:var(--text2)}
+.tc-ok{color:var(--green)}.tc-no{color:var(--red)}
+.dash-header{padding:16px 20px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px}
+.dash-header h2{font-size:18px;font-weight:800}
+.metric-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:12px;padding:16px 20px}
+.metric{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:14px}
+.metric-lbl{font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:.06em;margin-bottom:6px}
+.metric-val{font-size:26px;font-weight:800}
+.metric-sub{font-size:10px;color:var(--text3);margin-top:3px}
+.dash-2col{display:grid;grid-template-columns:1fr 1fr;gap:16px;padding:0 20px 20px}
+.dash-card{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:16px}
+.dash-card-title{font-size:12px;font-weight:700;margin-bottom:12px;color:var(--text2)}
+.prog-row{display:flex;align-items:center;gap:10px;padding:5px 0;border-bottom:1px solid rgba(30,45,74,.4)}
+.prog-lang{font-size:12px;font-weight:500;width:90px;flex-shrink:0}
+.prog-bar-wrap{flex:1;background:var(--bg3);border-radius:20px;height:5px;overflow:hidden}
+.prog-bar{height:5px;border-radius:20px;background:linear-gradient(90deg,var(--accent),var(--violet))}
+.prog-pct{font-size:11px;color:var(--text2);width:32px;text-align:right}
+.hm-grid{display:flex;gap:2px;overflow-x:auto;padding-bottom:4px}
+.hm-col{display:flex;flex-direction:column;gap:2px}
+.hc{width:10px;height:10px;border-radius:2px;flex-shrink:0}
+.hc0{background:var(--bg3)}.hc1{background:rgba(79,142,247,.25)}.hc2{background:rgba(79,142,247,.5)}.hc3{background:rgba(79,142,247,.75)}.hc4{background:#4f8ef7}
+.lb-row{display:flex;align-items:center;gap:10px;padding:7px 0;border-bottom:1px solid rgba(30,45,74,.4)}
+.lb-rank{font-size:14px;font-weight:800;width:28px;color:var(--text3)}
+.lb-rank.gold{color:#fbbf24}.lb-rank.silver{color:#94a3b8}.lb-rank.bronze{color:#b45309}
+.lb-av{width:30px;height:30px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:800;color:#fff;background:linear-gradient(135deg,var(--accent),var(--violet));flex-shrink:0}
+.lb-name{font-size:12px;font-weight:500;flex:1}
+.lb-score{font-family:'Courier New',monospace;font-size:12px;color:var(--accent)}
+.blog-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:16px;padding:20px}
+.blog-card{background:var(--card);border:1px solid var(--border);border-radius:12px;overflow:hidden;cursor:pointer;transition:.2s}
+.blog-card:hover{border-color:var(--accent);transform:translateY(-2px)}
+.blog-img{height:120px;background:var(--bg3);display:flex;align-items:center;justify-content:center;font-size:40px;border-bottom:1px solid var(--border)}
+.blog-body{padding:14px}
+.blog-cat{font-size:10px;font-weight:700;color:var(--accent);text-transform:uppercase;letter-spacing:.06em;margin-bottom:6px}
+.blog-title{font-size:13px;font-weight:700;line-height:1.4;margin-bottom:6px}
+.blog-excerpt{font-size:11px;color:var(--text2);line-height:1.5}
+.blog-foot{display:flex;align-items:center;gap:6px;margin-top:10px;font-size:10px;color:var(--text3)}
+.blog-av{width:18px;height:18px;border-radius:50%;background:linear-gradient(135deg,var(--accent),var(--violet));display:flex;align-items:center;justify-content:center;font-size:8px;font-weight:800;color:#fff}
+::-webkit-scrollbar{width:4px;height:4px}
+::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{background:var(--border2);border-radius:2px}
+@keyframes fadeIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+.page.on{animation:fadeIn .2s ease}
+@keyframes spin{to{transform:rotate(360deg)}}
+.spin{display:inline-block;animation:spin .7s linear infinite}
+@media(max-width:768px){
+  .lang-layout,.compiler-layout,.solve-grid{grid-template-columns:1fr}
+  .sidebar{display:none}
+  .dash-2col{grid-template-columns:1fr}
+  .nav-tabs .ntab:not(.active){display:none}
+}
+</style>
+</head>
+<body>
+<nav>
+  <div class="logo" onclick="show('landing')">DevSphere Academy</div>
+  <div class="nav-tabs">
+    <button class="ntab active" onclick="show('landing',this)">Home</button>
+    <button class="ntab" onclick="show('languages',this)">Languages</button>
+    <button class="ntab" onclick="show('dsa',this)">DSA</button>
+    <button class="ntab" onclick="show('practice',this)">Practice</button>
+    <button class="ntab" onclick="show('compiler',this)">Compiler</button>
+    <button class="ntab" onclick="show('dashboard',this)">Dashboard</button>
+    <button class="ntab" onclick="show('blog',this)">Blog</button>
+  </div>
+  <div class="nav-right">
+    <button class="btn btn-ghost">Log in</button>
+    <button class="btn btn-primary" onclick="show('dashboard',null)">Sign up</button>
+  </div>
+</nav>
+
+<div id="landing" class="page on">
+  <div class="hero">
+    <div class="hero-glow"></div>
+    <div class="announce">&#x1F680; New — Python Advanced Course + 50 new problems</div>
+    <h1>Master Programming with<br><span class="grad">DevSphere Academy</span></h1>
+    <p>The most comprehensive platform for learning programming languages, data structures, algorithms, and competitive coding — all in one place.</p>
+    <div class="hero-btns">
+      <button class="hbtn hbtn-p" onclick="show('languages',null)">Start Learning Free</button>
+      <button class="hbtn hbtn-s" onclick="show('practice',null)">Practice Problems</button>
+    </div>
+  </div>
+  <div class="stats-bar">
+    <div><div class="stat-num">50K+</div><div class="stat-lbl">Active Learners</div></div>
+    <div><div class="stat-num">200+</div><div class="stat-lbl">DSA Problems</div></div>
+    <div><div class="stat-num">5</div><div class="stat-lbl">Languages</div></div>
+    <div><div class="stat-num">98%</div><div class="stat-lbl">Success Rate</div></div>
+    <div><div class="stat-num">4.9&#x2605;</div><div class="stat-lbl">Rating</div></div>
+  </div>
+  <div class="section">
+    <div class="section-title">Learn <span>Programming Languages</span></div>
+    <div class="grid">
+      <div class="card" onclick="show('languages',null);switchLang('c')"><div class="card-icon">&#x1F535;</div><div class="card-title">C</div><div class="card-desc">Systems programming, pointers, memory management</div><br><span class="badge badge-green">Free</span></div>
+      <div class="card" onclick="show('languages',null);switchLang('cpp')"><div class="card-icon">&#x1F7E3;</div><div class="card-title">C++</div><div class="card-desc">OOP, STL, templates, competitive coding</div><br><span class="badge badge-green">Free</span></div>
+      <div class="card" onclick="show('languages',null);switchLang('java')"><div class="card-icon">&#x1F7E0;</div><div class="card-title">Java</div><div class="card-desc">Enterprise OOP, JVM, Spring fundamentals</div><br><span class="badge badge-green">Free</span></div>
+      <div class="card" onclick="show('languages',null);switchLang('python')"><div class="card-icon">&#x1F7E1;</div><div class="card-title">Python</div><div class="card-desc">From basics to ML, decorators, async</div><br><span class="badge badge-green">Free</span></div>
+      <div class="card" onclick="show('languages',null);switchLang('js')"><div class="card-icon">&#x1F7E4;</div><div class="card-title">JavaScript</div><div class="card-desc">Modern JS, async/await, Node.js, React</div><br><span class="badge badge-violet">Pro</span></div>
+    </div>
+  </div>
+  <div class="section" style="background:var(--bg2);border-top:1px solid var(--border);border-bottom:1px solid var(--border)">
+    <div class="section-title">DSA <span>Roadmap</span></div>
+    <div class="grid">
+      <div class="card" onclick="show('dsa',null)"><div class="card-icon">&#x1F4CA;</div><div class="card-title">Arrays &amp; Strings</div><div class="card-desc">Two pointers, sliding window, prefix sums — 70 problems</div></div>
+      <div class="card" onclick="show('dsa',null)"><div class="card-icon">&#x1F517;</div><div class="card-title">Linked Lists</div><div class="card-desc">Reversal, cycle detection, fast/slow pointer — 20 problems</div></div>
+      <div class="card" onclick="show('dsa',null)"><div class="card-icon">&#x1F332;</div><div class="card-title">Trees &amp; Graphs</div><div class="card-desc">BFS, DFS, Dijkstra, topological sort — 55 problems</div></div>
+      <div class="card" onclick="show('dsa',null)"><div class="card-icon">&#x26A1;</div><div class="card-title">Dynamic Programming</div><div class="card-desc">Memoisation, tabulation, classic patterns — 20 problems</div></div>
+    </div>
+  </div>
+  <div class="section">
+    <div class="section-title">Trusted by <span>Developers</span></div>
+    <div class="grid" style="grid-template-columns:repeat(auto-fill,minmax(240px,1fr))">
+      <div class="card"><div style="font-size:16px;margin-bottom:8px">&#x2605;&#x2605;&#x2605;&#x2605;&#x2605;</div><p style="font-size:12px;color:var(--text2);line-height:1.6;margin-bottom:10px">"DevSphere's DSA roadmap got me FAANG-ready in 3 months. The structured approach is unbeatable."</p><div style="font-size:11px;font-weight:700">Arjun Sharma — <span style="color:var(--text2);font-weight:400">SWE @ Google</span></div></div>
+      <div class="card"><div style="font-size:16px;margin-bottom:8px">&#x2605;&#x2605;&#x2605;&#x2605;&#x2605;</div><p style="font-size:12px;color:var(--text2);line-height:1.6;margin-bottom:10px">"The inline compiler with instant feedback is perfect. Python from zero to ML-ready in 6 weeks."</p><div style="font-size:11px;font-weight:700">Priya Mehta — <span style="color:var(--text2);font-weight:400">Data Scientist @ Microsoft</span></div></div>
+      <div class="card"><div style="font-size:16px;margin-bottom:8px">&#x2605;&#x2605;&#x2605;&#x2605;&#x2605;</div><p style="font-size:12px;color:var(--text2);line-height:1.6;margin-bottom:10px">"Best platform for placement prep. The 200-problem set covers every pattern for top interviews."</p><div style="font-size:11px;font-weight:700">Rahul Verma — <span style="color:var(--text2);font-weight:400">Placed @ Amazon</span></div></div>
+    </div>
+  </div>
+</div>
+
+<div id="languages" class="page">
+  <div class="lang-layout">
+    <div class="sidebar" id="lang-sidebar"></div>
+    <div class="content" id="lang-content"></div>
+  </div>
+</div>
+<div id="dsa" class="page">
+  <div class="lang-layout">
+    <div class="sidebar" id="dsa-sidebar"></div>
+    <div class="content" id="dsa-content"></div>
+  </div>
+</div>
+<div id="practice" class="page">
+  <div class="prob-filters">
+    <span style="font-size:12px;font-weight:700;color:var(--text2)">Filter:</span>
+    <button class="filt on" onclick="filterProbs('all',this)">All</button>
+    <button class="filt" onclick="filterProbs('Easy',this)">Easy</button>
+    <button class="filt" onclick="filterProbs('Medium',this)">Medium</button>
+    <button class="filt" onclick="filterProbs('Hard',this)">Hard</button>
+    <button class="filt" onclick="filterProbs('Array',this)">Array</button>
+    <button class="filt" onclick="filterProbs('String',this)">String</button>
+    <button class="filt" onclick="filterProbs('Tree',this)">Tree</button>
+    <button class="filt" onclick="filterProbs('Graph',this)">Graph</button>
+    <button class="filt" onclick="filterProbs('DP',this)">DP</button>
+    <input class="search-box" placeholder="Search problems..." oninput="searchProbs(this.value)">
+    <span id="pcount" style="font-size:11px;color:var(--text3);margin-left:8px"></span>
+  </div>
+  <div style="overflow-x:auto">
+    <table class="prob-table">
+      <thead><tr><th style="width:30px"></th><th>#</th><th>Title</th><th>Difficulty</th><th>Tags</th><th>Acceptance</th></tr></thead>
+      <tbody id="prob-tbody"></tbody>
+    </table>
+  </div>
+  <div class="modal-wrap" id="solve-modal">
+    <div class="solve-shell">
+      <div class="modal-bar">
+        <button class="back-btn" onclick="closeModal()">&#x2190; Back to Problems</button>
+        <span id="modal-title" style="font-weight:700;font-size:13px"></span>
+        <span id="modal-diff" class="diff"></span>
+      </div>
+      <div class="solve-grid">
+        <div class="prob-desc">
+          <div class="prob-hdr"><h3 id="modal-h3"></h3><div id="modal-tags" style="margin-top:6px"></div></div>
+          <div class="prob-body" id="modal-body"></div>
+        </div>
+        <div class="solve-pane">
+          <div class="solve-toolbar">
+            <select class="lang-sel" id="solve-lang" onchange="updateStarter()">
+              <option>Python</option><option>C++</option><option>Java</option><option>JavaScript</option><option>C</option>
+            </select>
+            <button class="run-btn" onclick="runSolve(false)">&#x25B6; Run</button>
+            <button class="run-btn" style="background:linear-gradient(135deg,var(--accent),var(--violet))" onclick="runSolve(true)">&#x2714; Submit</button>
+          </div>
+          <textarea class="solve-ta" id="solve-ta" spellcheck="false"></textarea>
+          <div class="result-pane" id="result-pane"><div style="color:var(--text3);font-size:11px">Run your code to see results...</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<div id="compiler" class="page">
+  <div class="compiler-layout">
+    <div class="editor-pane">
+      <div class="pane-toolbar">
+        <select class="lang-sel" id="c-lang" onchange="loadTpl()">
+          <option value="python">Python</option><option value="c">C</option><option value="cpp">C++</option><option value="java">Java</option><option value="js">JavaScript</option>
+        </select>
+        <button class="run-btn" id="run-code-btn" onclick="runCode()">&#x25B6; Run Code</button>
+        <button class="ghost-btn" onclick="clearEditor()">Clear</button>
+        <button class="ghost-btn" onclick="loadTpl()">Reset</button>
+        <span style="margin-left:auto;font-size:10px;color:var(--text3)">Judge0 API Ready</span>
+      </div>
+      <div class="editor-area">
+        <div class="line-nums" id="lnums">1</div>
+        <textarea class="editor-ta" id="editor" spellcheck="false" onkeydown="editorTab(event)" oninput="updateLnums()" onscroll="syncLnums(this)"></textarea>
+      </div>
+    </div>
+    <div class="output-pane" style="display:flex;flex-direction:column">
+      <div class="out-tabs">
+        <div class="otab on" onclick="switchOTab('output',this)">Output</div>
+        <div class="otab" onclick="switchOTab('input',this)">Input</div>
+        <div class="otab" onclick="switchOTab('info',this)">Info</div>
+      </div>
+      <div id="out-output" class="out-console" style="flex:1"></div>
+      <div id="out-input" style="display:none;flex:1;padding:12px">
+        <div style="font-size:11px;font-weight:700;color:var(--text3);margin-bottom:8px;text-transform:uppercase;letter-spacing:.05em">Program input (stdin)</div>
+        <textarea id="stdin-main" style="width:100%;height:200px;background:var(--bg2);color:var(--text);border:1px solid var(--border);border-radius:6px;padding:8px;font-family:'Courier New',monospace;font-size:12px;resize:none;outline:none" placeholder="Enter stdin here..."></textarea>
+      </div>
+      <div id="out-info" style="display:none;flex:1;padding:16px;font-size:12px;color:var(--text2);line-height:1.8">
+        <strong style="color:var(--text)">About the Compiler</strong><br><br>
+        Supports 5 languages. In the full stack version, code executes via the Judge0 API in isolated sandboxes.<br><br>
+        <strong style="color:var(--text)">Limits</strong> — 5s runtime &middot; 256MB RAM<br>
+        <strong style="color:var(--text)">Keyboard shortcuts</strong> — Tab = indent &middot; Ctrl+Enter = Run
+      </div>
+      <div class="stdin-area">
+        <div class="stdin-lbl">Quick stdin</div>
+        <textarea class="stdin-ta" id="stdin-quick" placeholder="Program input..."></textarea>
+      </div>
+    </div>
+  </div>
+</div>
+<div id="dashboard" class="page">
+  <div class="dash-header">
+    <div>
+      <h2>Welcome back, <span style="color:var(--accent)">Dev!</span> &#x1F525; 7-day streak</h2>
+      <div style="font-size:12px;color:var(--text2);margin-top:2px">You're in the top 2% globally this week — keep it up!</div>
+    </div>
+    <button class="btn btn-primary" onclick="show('practice',null)">Practice Now</button>
+  </div>
+  <div class="metric-grid">
+    <div class="metric"><div class="metric-lbl">Problems Solved</div><div class="metric-val" style="color:var(--green)">127</div><div class="metric-sub">of 200 total</div></div>
+    <div class="metric"><div class="metric-lbl">Easy</div><div class="metric-val" style="color:var(--easy)">68</div><div class="metric-sub">of 80</div></div>
+    <div class="metric"><div class="metric-lbl">Medium</div><div class="metric-val" style="color:var(--medium)">42</div><div class="metric-sub">of 80</div></div>
+    <div class="metric"><div class="metric-lbl">Hard</div><div class="metric-val" style="color:var(--hard)">17</div><div class="metric-sub">of 40</div></div>
+    <div class="metric"><div class="metric-lbl">Streak</div><div class="metric-val" style="color:var(--amber)">7&#x1F525;</div><div class="metric-sub">days</div></div>
+    <div class="metric"><div class="metric-lbl">Global Rank</div><div class="metric-val" style="color:var(--violet)">#842</div><div class="metric-sub">Top 2%</div></div>
+  </div>
+  <div class="dash-2col">
+    <div>
+      <div class="dash-card">
+        <div class="dash-card-title">Language Progress</div>
+        <div id="lang-prog"></div>
+      </div>
+    </div>
+    <div>
+      <div class="dash-card" style="margin-bottom:12px">
+        <div class="dash-card-title">Global Leaderboard</div>
+        <div id="lb"></div>
+      </div>
+      <div class="dash-card">
+        <div class="dash-card-title">Activity Heatmap (365 days)</div>
+        <div class="hm-grid" id="heatmap"></div>
+      </div>
+    </div>
+  </div>
+</div>
+<div id="blog" class="page">
+  <div style="padding:20px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px">
+    <div>
+      <h2 style="font-size:20px;font-weight:800">DevSphere <span style="color:var(--accent)">Blog</span></h2>
+      <div style="font-size:12px;color:var(--text2)">Tutorials, interview prep, system design &amp; career advice</div>
+    </div>
+    <input class="search-box" placeholder="Search articles...">
+  </div>
+  <div class="blog-grid" id="blog-grid"></div>
+</div>
+
+<script>
+
+const LANGS={c:{name:'C',icon:'C',topics:[
+  {id:'intro',title:'Introduction to C',done:true,h:'Introduction to C',p:'C is a general-purpose, procedural language developed by Dennis Ritchie at Bell Labs in 1972. It underlies Linux, Windows, and Python itself. C gives direct hardware access via pointers.',concept:'C gives direct hardware control. Power comes with responsibility — you manage your own memory.',code:'<span class="cm">/* Hello World in C */</span>\n<span class="kw">#include</span> <span class="str">&lt;stdio.h&gt;</span>\n\n<span class="tp">int</span> <span class="fn">main</span>(<span class="tp">void</span>) {\n    <span class="fn">printf</span>(<span class="str">"Hello, DevSphere!\\n"</span>);\n    <span class="kw">return</span> <span class="num">0</span>;\n}',out:'Hello, DevSphere!',quiz:{q:'Who created C?',opts:['Bjarne Stroustrup','Dennis Ritchie','Guido van Rossum','Linus Torvalds'],ans:1}},
+  {id:'vars',title:'Variables & Types',h:'Variables & Data Types in C',p:'C has several fundamental types: int (4 bytes), float, double, char. All variables must be declared before use with an explicit type.',code:'<span class="tp">int</span>    age   = <span class="num">21</span>;\n<span class="tp">float</span>  gpa   = <span class="num">3.8f</span>;\n<span class="tp">double</span> pi    = <span class="num">3.14159265</span>;\n<span class="tp">char</span>   grade = <span class="str">\'A\'</span>;\n\n<span class="fn">printf</span>(<span class="str">"Age: %d, GPA: %.1f, Grade: %c"</span>, age, gpa, grade);',out:'Age: 21, GPA: 3.8, Grade: A',quiz:{q:'Size of int (typically)?',opts:['1 byte','2 bytes','4 bytes','8 bytes'],ans:2}},
+  {id:'pointers',title:'Pointers & Memory',h:'Pointers in C',p:'A pointer holds a memory address. & gives the address of a variable. * dereferences a pointer to get its value. Pointers enable dynamic memory, arrays, and pass-by-reference.',code:'<span class="tp">int</span>  x   = <span class="num">42</span>;\n<span class="tp">int</span> *ptr = &x;\n\n<span class="fn">printf</span>(<span class="str">"Value:   %d\\n"</span>, *ptr);\n<span class="fn">printf</span>(<span class="str">"Address: %p\\n"</span>, (<span class="tp">void</span>*)ptr);\n*ptr = <span class="num">100</span>;\n<span class="fn">printf</span>(<span class="str">"New x:   %d\\n"</span>, x);',out:'Value:   42\nAddress: 0x7ffd…\nNew x:   100',quiz:{q:'What does & give you?',opts:['The value','The address','A copy','Nothing'],ans:1}},
+]},python:{name:'Python',icon:'PY',topics:[
+  {id:'intro',title:'Introduction',done:true,h:'Introduction to Python',p:'Python (Guido van Rossum, 1991) — high-level, interpreted, dynamically typed. Famous for clean syntax and "batteries included" philosophy.',concept:'The Zen of Python: "Explicit is better than implicit. Simple is better than complex."',code:'<span class="cm"># Your first Python program</span>\n<span class="fn">print</span>(<span class="str">"Hello, DevSphere!"</span>)\n\nname = <span class="str">"Developer"</span>\nyear = <span class="num">2024</span>\n<span class="fn">print</span>(<span class="fn">f</span><span class="str">"Welcome, {name}! Year: {year}"</span>)',out:'Hello, DevSphere!\nWelcome, Developer! Year: 2024',quiz:{q:'Python was created by?',opts:['Guido van Rossum','Dennis Ritchie','James Gosling','Bjarne Stroustrup'],ans:0}},
+  {id:'loops',title:'Loops & Comprehensions',h:'Loops in Python',p:'Python for-loops iterate over any iterable. List comprehensions provide elegant one-liners for creating lists.',code:'<span class="kw">for</span> i <span class="kw">in</span> <span class="fn">range</span>(<span class="num">5</span>):\n    <span class="fn">print</span>(i, end=<span class="str">" "</span>)\n\nsquares = [x**<span class="num">2</span> <span class="kw">for</span> x <span class="kw">in</span> <span class="fn">range</span>(<span class="num">1</span>, <span class="num">6</span>)]\n<span class="fn">print</span>(squares)\n\nsq_map = {x: x**<span class="num">2</span> <span class="kw">for</span> x <span class="kw">in</span> <span class="fn">range</span>(<span class="num">1</span>, <span class="num">4</span>)}\n<span class="fn">print</span>(sq_map)',out:'0 1 2 3 4 \n[1, 4, 9, 16, 25]\n{1: 1, 2: 4, 3: 9}',quiz:{q:'What does range(5) produce?',opts:['1,2,3,4,5','0,1,2,3,4','0,1,2,3,4,5','1,2,3,4'],ans:1}},
+  {id:'functions',title:'Functions & Lambdas',h:'Functions in Python',p:'Functions use def. Support default args, *args, **kwargs. Lambda creates anonymous single-expression functions.',code:'<span class="kw">def</span> <span class="fn">greet</span>(name, greeting=<span class="str">"Hello"</span>):\n    <span class="kw">return</span> <span class="fn">f</span><span class="str">"{greeting}, {name}!"</span>\n\nsquare = <span class="kw">lambda</span> x: x ** <span class="num">2</span>\ndoubles = <span class="fn">list</span>(<span class="fn">map</span>(<span class="kw">lambda</span> x: x*<span class="num">2</span>, [<span class="num">1</span>,<span class="num">2</span>,<span class="num">3</span>,<span class="num">4</span>]))\n\n<span class="fn">print</span>(<span class="fn">greet</span>(<span class="str">"Dev"</span>))\n<span class="fn">print</span>(square(<span class="num">7</span>), doubles)',out:'Hello, Dev!\n49 [2, 4, 6, 8]',quiz:{q:'What does a decorator do?',opts:['Deletes a function','Wraps it to add behavior','Creates a class','Imports a module'],ans:1}},
+  {id:'oop',title:'OOP in Python',h:'Object-Oriented Python',p:'Python classes support inheritance, polymorphism, and encapsulation. __init__ is the constructor.',code:'<span class="kw">class</span> <span class="tp">Animal</span>:\n    <span class="kw">def</span> <span class="fn">__init__</span>(self, name):\n        self.name = name\n    <span class="kw">def</span> <span class="fn">speak</span>(self): <span class="kw">pass</span>\n\n<span class="kw">class</span> <span class="tp">Dog</span>(<span class="tp">Animal</span>):\n    <span class="kw">def</span> <span class="fn">speak</span>(self):\n        <span class="kw">return</span> <span class="fn">f</span><span class="str">"{self.name} says Woof!"</span>\n\n<span class="kw">for</span> a <span class="kw">in</span> [<span class="tp">Dog</span>(<span class="str">"Buddy"</span>), <span class="tp">Dog</span>(<span class="str">"Luna"</span>)]:\n    <span class="fn">print</span>(a.<span class="fn">speak</span>())',out:'Buddy says Woof!\nLuna says Woof!'},
+]},cpp:{name:'C++',icon:'C++',topics:[
+  {id:'intro',title:'Introduction',done:true,h:'Introduction to C++',p:'C++ (Bjarne Stroustrup, 1983) adds OOP, templates, and the STL to C. Used in game engines, HFT, competitive programming.',code:'<span class="kw">#include</span> <span class="str">&lt;iostream&gt;</span>\n<span class="kw">using namespace</span> std;\n\n<span class="tp">int</span> <span class="fn">main</span>() {\n    cout << <span class="str">"Hello, DevSphere!"</span> << endl;\n    <span class="tp">int</span> sum = <span class="num">0</span>;\n    <span class="kw">for</span> (<span class="tp">int</span> i = <span class="num">1</span>; i <= <span class="num">100</span>; i++) sum += i;\n    cout << <span class="str">"Sum 1..100 = "</span> << sum << endl;\n    <span class="kw">return</span> <span class="num">0</span>;\n}',out:'Hello, DevSphere!\nSum 1..100 = 5050',quiz:{q:'C++ was created by?',opts:['Dennis Ritchie','James Gosling','Bjarne Stroustrup','Guido van Rossum'],ans:2}},
+  {id:'stl',title:'STL Containers',h:'Standard Template Library',p:'The STL provides vector, map, set, priority_queue and algorithms. Essential for competitive programming.',code:'<span class="kw">#include</span> <span class="str">&lt;bits/stdc++.h&gt;</span>\n<span class="kw">using namespace</span> std;\n<span class="tp">int</span> <span class="fn">main</span>() {\n    vector&lt;<span class="tp">int</span>&gt; v = {<span class="num">3</span>,<span class="num">1</span>,<span class="num">4</span>,<span class="num">1</span>,<span class="num">5</span>,<span class="num">9</span>};\n    <span class="fn">sort</span>(v.<span class="fn">begin</span>(), v.<span class="fn">end</span>());\n    <span class="kw">for</span> (<span class="kw">auto</span> x : v) cout << x << <span class="str">" "</span>;\n    priority_queue&lt;<span class="tp">int</span>&gt; pq;\n    <span class="kw">for</span> (<span class="tp">int</span> x : {<span class="num">5</span>,<span class="num">2</span>,<span class="num">8</span>,<span class="num">1</span>}) pq.<span class="fn">push</span>(x);\n    cout << <span class="str">"\\nMax: "</span> << pq.<span class="fn">top</span>();\n}',out:'1 1 3 4 5 9 \nMax: 8'},
+]},java:{name:'Java',icon:'JV',topics:[
+  {id:'intro',title:'Introduction',done:true,h:'Introduction to Java',p:'Java (James Gosling, 1995) — Write Once, Run Anywhere. Compiles to bytecode on the JVM. Purely OOP, strongly typed.',code:'<span class="kw">public class</span> <span class="tp">Main</span> {\n    <span class="kw">public static void</span> <span class="fn">main</span>(String[] args) {\n        System.out.<span class="fn">println</span>(<span class="str">"Hello, DevSphere!"</span>);\n        <span class="kw">var</span> list = <span class="kw">new</span> java.util.<span class="tp">ArrayList</span>&lt;<span class="tp">String</span>&gt;();\n        list.<span class="fn">add</span>(<span class="str">"Java"</span>); list.<span class="fn">add</span>(<span class="str">"Python"</span>);\n        list.<span class="fn">forEach</span>(System.out::println);\n    }\n}',out:'Hello, DevSphere!\nJava\nPython',quiz:{q:'Java compiles to?',opts:['Machine code','Assembly','Bytecode','Source code'],ans:2}},
+]},js:{name:'JavaScript',icon:'JS',topics:[
+  {id:'intro',title:'Introduction',done:true,h:'Introduction to JavaScript',p:'JS (Brendan Eich, 1995) — the language of the web. Runs in browsers and Node.js. Prototype-based, event-driven.',code:'<span class="kw">const</span> greet = (name = <span class="str">\'World\'</span>) => `Hello, ${name}!`;\n<span class="fn">console</span>.<span class="fn">log</span>(<span class="fn">greet</span>(<span class="str">\'DevSphere\'</span>));\n\n<span class="kw">const</span> nums = [<span class="num">1</span>,<span class="num">2</span>,<span class="num">3</span>,<span class="num">4</span>,<span class="num">5</span>];\n<span class="kw">const</span> result = nums\n  .<span class="fn">filter</span>(n => n % <span class="num">2</span> === <span class="num">0</span>)\n  .<span class="fn">map</span>(n => n ** <span class="num">2</span>)\n  .<span class="fn">reduce</span>((a, n) => a + n, <span class="num">0</span>);\n<span class="fn">console</span>.<span class="fn">log</span>(<span class="str">\'Result:\'</span>, result);',out:'Hello, DevSphere!\nResult: 20',quiz:{q:'Who created JavaScript?',opts:['Guido van Rossum','Brendan Eich','Ryan Dahl','Douglas Crockford'],ans:1}},
+  {id:'async',title:'Async & Promises',h:'Asynchronous JavaScript',p:'JS uses the event loop for async I/O. Promises and async/await make async code readable and maintainable.',code:'<span class="kw">const</span> <span class="fn">fetchUser</span> = (id) =>\n    <span class="kw">new</span> <span class="tp">Promise</span>(resolve =>\n        <span class="fn">setTimeout</span>(() => <span class="fn">resolve</span>({id, name:<span class="str">\'Dev\'</span>}), <span class="num">100</span>)\n    );\n\n<span class="kw">async function</span> <span class="fn">main</span>() {\n    <span class="kw">const</span> user = <span class="kw">await</span> <span class="fn">fetchUser</span>(<span class="num">1</span>);\n    <span class="fn">console</span>.<span class="fn">log</span>(`User: ${user.name} (id: ${user.id})`);\n}\n<span class="fn">main</span>();',out:'User: Dev (id: 1)'},
+]}};
+
+const DSA=[
+  {id:'arrays',name:'Arrays',icon:'📊',count:40,theory:'An array is a contiguous block of memory. Random access O(1), insert/delete O(n). Key patterns: two pointers, sliding window, prefix sums.',code:'<span class="cm"># Two Sum — O(n) hash map</span>\n<span class="kw">def</span> <span class="fn">two_sum</span>(nums, target):\n    seen = {}\n    <span class="kw">for</span> i, n <span class="kw">in</span> <span class="fn">enumerate</span>(nums):\n        <span class="kw">if</span> (diff := target - n) <span class="kw">in</span> seen:\n            <span class="kw">return</span> [seen[diff], i]\n        seen[n] = i\n\n<span class="fn">print</span>(<span class="fn">two_sum</span>([<span class="num">2</span>,<span class="num">7</span>,<span class="num">11</span>,<span class="num">15</span>], <span class="num">9</span>))',out:'[0, 1]',tc:{Access:'O(1)',Search:'O(n)',Insert:'O(n)',Delete:'O(n)',Space:'O(n)'}},
+  {id:'linked-lists',name:'Linked Lists',icon:'🔗',count:20,theory:'Nodes chained by pointers. O(1) insert/delete given reference, O(n) access. Fast/slow pointer solves cycle detection and midpoint problems in O(1) space.',code:'<span class="kw">def</span> <span class="fn">reverse_list</span>(head):\n    prev = <span class="kw">None</span>\n    <span class="kw">while</span> head:\n        nxt = head.next\n        head.next = prev\n        prev = head\n        head = nxt\n    <span class="kw">return</span> prev\n\n<span class="cm"># Floyd cycle detection — O(1) space</span>\n<span class="kw">def</span> <span class="fn">has_cycle</span>(head):\n    slow = fast = head\n    <span class="kw">while</span> fast <span class="kw">and</span> fast.next:\n        slow = slow.next; fast = fast.next.next\n        <span class="kw">if</span> slow <span class="kw">is</span> fast: <span class="kw">return True</span>\n    <span class="kw">return False</span>',out:'# O(n) time, O(1) space',tc:{Access:'O(n)',Search:'O(n)',Insert:'O(1)*',Delete:'O(1)*',Space:'O(n)'}},
+  {id:'trees',name:'Binary Trees',icon:'🌲',count:30,theory:'Each node has ≤2 children. DFS (recursive) for depth/path problems, BFS (queue) for level-based. Balanced tree height = O(log n).',code:'<span class="kw">from</span> collections <span class="kw">import</span> deque\n\n<span class="kw">def</span> <span class="fn">level_order</span>(root):\n    <span class="kw">if not</span> root: <span class="kw">return</span> []\n    res, q = [], deque([root])\n    <span class="kw">while</span> q:\n        level = []\n        <span class="kw">for</span> _ <span class="kw">in</span> <span class="fn">range</span>(<span class="fn">len</span>(q)):\n            node = q.<span class="fn">popleft</span>()\n            level.<span class="fn">append</span>(node.val)\n            <span class="kw">if</span> node.left:  q.<span class="fn">append</span>(node.left)\n            <span class="kw">if</span> node.right: q.<span class="fn">append</span>(node.right)\n        res.<span class="fn">append</span>(level)\n    <span class="kw">return</span> res',out:'[[3],[9,20],[15,7]]',tc:{Access:'O(h)',Search:'O(h)',Insert:'O(h)',Delete:'O(h)',Space:'O(n)'}},
+  {id:'graphs',name:'Graphs',icon:'🕸️',count:25,theory:'Vertices + edges. BFS = shortest path (unweighted), DFS = connectivity/cycles. Topological sort detects cycles. Union-Find for connectivity queries in O(α(n)) ≈ O(1).',code:'<span class="kw">from</span> collections <span class="kw">import</span> deque\n\n<span class="kw">def</span> <span class="fn">bfs</span>(graph, start):\n    visited = {start}\n    q, order = deque([start]), []\n    <span class="kw">while</span> q:\n        v = q.<span class="fn">popleft</span>()\n        order.<span class="fn">append</span>(v)\n        <span class="kw">for</span> nei <span class="kw">in</span> graph.get(v, []):\n            <span class="kw">if</span> nei <span class="kw">not in</span> visited:\n                visited.<span class="fn">add</span>(nei); q.<span class="fn">append</span>(nei)\n    <span class="kw">return</span> order',out:'[0, 1, 2, 3, 4] (example)',tc:{BFS:'O(V+E)',DFS:'O(V+E)',Dijkstra:'O(E log V)',Space:'O(V+E)'}},
+  {id:'dp',name:'Dynamic Programming',icon:'⚡',count:20,theory:'Break into overlapping subproblems, store results. Two flavors: top-down memoisation (recursive + cache) and bottom-up tabulation (iterative).',code:'<span class="cm"># Coin Change — bottom-up DP — O(n * amount)</span>\n<span class="kw">def</span> <span class="fn">coin_change</span>(coins, amount):\n    dp = [<span class="fn">float</span>(<span class="str">\'inf\'</span>)] * (amount + <span class="num">1</span>)\n    dp[<span class="num">0</span>] = <span class="num">0</span>\n    <span class="kw">for</span> coin <span class="kw">in</span> coins:\n        <span class="kw">for</span> i <span class="kw">in</span> <span class="fn">range</span>(coin, amount + <span class="num">1</span>):\n            dp[i] = <span class="fn">min</span>(dp[i], dp[i - coin] + <span class="num">1</span>)\n    <span class="kw">return</span> dp[amount] <span class="kw">if</span> dp[amount] != <span class="fn">float</span>(<span class="str">\'inf\'</span>) <span class="kw">else</span> -<span class="num">1</span>\n\n<span class="fn">print</span>(<span class="fn">coin_change</span>([<span class="num">1</span>,<span class="num">5</span>,<span class="num">11</span>], <span class="num">15</span>))',out:'3',tc:{Fibonacci:'O(n)',LCS:'O(mn)',Knapsack:'O(nW)',Space:'O(n) optimized'}},
+];
+
+const PROBLEMS=[
+  {id:1,title:'Two Sum',diff:'Easy',tags:['Array','Hash Map'],acc:'73%',desc:'Given an array of integers and a target, return indices of two numbers that add up to target.',ex:'Input: nums=[2,7,11,15], target=9\nOutput: [0,1]\nExplanation: nums[0]+nums[1]=9'},
+  {id:2,title:'Best Time to Buy Stock',diff:'Easy',tags:['Array','Greedy'],acc:'68%',desc:'Find maximum profit from buying and selling one stock.',ex:'Input: prices=[7,1,5,3,6,4]\nOutput: 5 (buy day 2, sell day 5)'},
+  {id:3,title:'Contains Duplicate',diff:'Easy',tags:['Array','Hash Set'],acc:'79%',desc:'Return true if any value appears at least twice.',ex:'Input: [1,2,3,1] → true\nInput: [1,2,3,4] → false'},
+  {id:4,title:'Maximum Subarray',diff:'Medium',tags:['Array','DP'],acc:'54%',desc:'Find the subarray with the largest sum (Kadane\'s Algorithm).',ex:'Input: [-2,1,-3,4,-1,2,1,-5,4]\nOutput: 6 → subarray [4,-1,2,1]'},
+  {id:5,title:'3Sum',diff:'Medium',tags:['Array','Two Pointer'],acc:'38%',desc:'Find all unique triplets that sum to zero using two pointers.',ex:'Input: [-1,0,1,2,-1,-4]\nOutput: [[-1,-1,2],[-1,0,1]]'},
+  {id:6,title:'Trapping Rain Water',diff:'Hard',tags:['Array','Stack'],acc:'61%',desc:'Compute how much water can be trapped between elevation bars.',ex:'Input: [0,1,0,2,1,0,1,3,2,1,2,1]\nOutput: 6'},
+  {id:7,title:'Valid Parentheses',diff:'Easy',tags:['Stack','String'],acc:'82%',desc:'Determine if brackets are valid: every open bracket has a matching close in correct order.',ex:'Input: "()[]{}" → true\nInput: "(]" → false'},
+  {id:8,title:'Longest Substring No Repeat',diff:'Medium',tags:['String','Sliding Window'],acc:'49%',desc:'Find length of the longest substring without repeating characters.',ex:'Input: "abcabcbb"\nOutput: 3 → "abc"'},
+  {id:9,title:'Minimum Window Substring',diff:'Hard',tags:['String','Sliding Window'],acc:'41%',desc:'Find minimum window in s containing all characters of t.',ex:'Input: s="ADOBECODEBANC", t="ABC"\nOutput: "BANC"'},
+  {id:10,title:'Reverse Linked List',diff:'Easy',tags:['Linked List'],acc:'88%',desc:'Reverse a singly linked list iteratively in O(n) time O(1) space.',ex:'Input: [1,2,3,4,5]\nOutput: [5,4,3,2,1]'},
+  {id:11,title:'Merge Two Sorted Lists',diff:'Easy',tags:['Linked List'],acc:'82%',desc:'Merge two sorted linked lists into one sorted list.',ex:'Input: [1,2,4] + [1,3,4]\nOutput: [1,1,2,3,4,4]'},
+  {id:12,title:'LRU Cache',diff:'Medium',tags:['Linked List','Hash Map','Design'],acc:'48%',desc:'Design LRU cache — get and put both in O(1). Use doubly linked list + hash map.',ex:'LRUCache(2)→put(1,1)→put(2,2)→get(1)=1→put(3,3)→get(2)=-1'},
+  {id:13,title:'Invert Binary Tree',diff:'Easy',tags:['Tree'],acc:'84%',desc:'Invert (mirror) a binary tree recursively or iteratively.',ex:'Input: [4,2,7,1,3,6,9]\nOutput: [4,7,2,9,6,3,1]'},
+  {id:14,title:'Binary Tree Level Order',diff:'Medium',tags:['Tree','BFS'],acc:'74%',desc:'Return level-order traversal using a queue (BFS).',ex:'Input: [3,9,20,null,null,15,7]\nOutput: [[3],[9,20],[15,7]]'},
+  {id:15,title:'Validate BST',diff:'Medium',tags:['Tree','BST'],acc:'59%',desc:'Verify a binary tree is a valid BST using inorder traversal or bounds checking.',ex:'Input: [2,1,3] → true\nInput: [5,1,4,null,null,3,6] → false'},
+  {id:16,title:'Number of Islands',diff:'Medium',tags:['Graph'],acc:'62%',desc:'Count connected components of 1s in a 2D grid using DFS/BFS.',ex:'Input: [[1,1,0],[1,1,0],[0,0,1]]\nOutput: 2'},
+  {id:17,title:'Course Schedule',diff:'Medium',tags:['Graph'],acc:'48%',desc:'Detect cycle in directed graph (topological sort / DFS).',ex:'numCourses=2, [[1,0]] → true\nnumCourses=2, [[1,0],[0,1]] → false'},
+  {id:18,title:'Climbing Stairs',diff:'Easy',tags:['DP'],acc:'88%',desc:'Count ways to climb n stairs taking 1 or 2 steps (Fibonacci variant).',ex:'Input: n=3 → 3\n(1+1+1, 1+2, 2+1)'},
+  {id:19,title:'Coin Change',diff:'Medium',tags:['DP'],acc:'48%',desc:'Fewest coins to make amount using bottom-up DP.',ex:'Input: coins=[1,5,11], amount=15 → 3 (5+5+5)'},
+  {id:20,title:'Longest Increasing Subsequence',diff:'Medium',tags:['DP','Binary Search'],acc:'56%',desc:'Length of longest strictly increasing subsequence — O(n log n) with patience sorting.',ex:'Input: [10,9,2,5,3,7,101,18]\nOutput: 4 → [2,3,7,101]'},
+];
+
+const STARTERS={Python:(t)=>`def solution(nums, target):\n    # ${t}\n    # Write your solution here\n    pass\n\n# Test:\nprint(solution([2,7,11,15], 9))`,'C++':(t)=>`#include <bits/stdc++.h>\nusing namespace std;\n\n// ${t}\nvector<int> solution(vector<int>& nums, int target) {\n    // Your code here\n    return {};\n}\n\nint main() {\n    vector<int> nums = {2,7,11,15};\n    auto res = solution(nums, 9);\n    for (auto x : res) cout << x << " ";\n}`,Java:(t)=>`// ${t}\npublic class Solution {\n    public int[] solution(int[] nums, int target) {\n        // Your code here\n        return new int[]{};\n    }\n}`,JavaScript:(t)=>`// ${t}\nconst solution = (nums, target) => {\n    // Your code here\n};\nconsole.log(solution([2,7,11,15], 9));`,C:(t)=>`/* ${t} */\n#include <stdio.h>\n\nvoid solution() {\n    /* Your code here */\n}\n\nint main() {\n    solution();\n    return 0;\n}`};
+
+const TEMPLATES={python:`# Python program\ndef main():\n    n = int(input())\n    print(f"Square of {n} = {n*n}")\n\nmain()`,c:`#include <stdio.h>\n\nint main() {\n    int n;\n    scanf("%d", &n);\n    printf("Square of %d = %d\\n", n, n*n);\n    return 0;\n}`,cpp:`#include <bits/stdc++.h>\nusing namespace std;\n\nint main() {\n    int n;\n    cin >> n;\n    cout << "Square of " << n << " = " << n*n << endl;\n    return 0;\n}`,java:`import java.util.Scanner;\n\npublic class Main {\n    public static void main(String[] args) {\n        Scanner sc = new Scanner(System.in);\n        int n = sc.nextInt();\n        System.out.printf("Square of %d = %d%n", n, n*n);\n    }\n}`,js:`process.stdin.resume();\nprocess.stdin.setEncoding('utf8');\nprocess.stdin.on('data', d => {\n    const n = parseInt(d);\n    console.log(\`Square of \${n} = \${n*n}\`);\n});`};
+
+const BLOGS=[{icon:'⚡',cat:'Tutorial',title:'Mastering Dynamic Programming',excerpt:'From Fibonacci to LCS — understand every DP pattern with diagrams and optimised code.',author:'Arjun S.',time:'8 min'},{icon:'🎯',cat:'Interview Prep',title:'Top 15 LeetCode Patterns',excerpt:'These 15 patterns solve 90% of coding interview problems. Learn once, apply everywhere.',author:'Priya M.',time:'6 min'},{icon:'🐍',cat:'Python',title:'Python One-Liners',excerpt:'List comprehensions, walrus operator, lambda tricks — elegant Python every interviewer loves.',author:'Dev Team',time:'5 min'},{icon:'🕸️',cat:'Algorithms',title:'BFS vs DFS Guide',excerpt:'Both explore graphs but solve different problems. When to use each one.',author:'Rahul V.',time:'6 min'},{icon:'🟣',cat:'C++',title:'STL Mastery',excerpt:'The Standard Template Library is your best friend in competitive programming.',author:'Karan P.',time:'7 min'},{icon:'🏗️',cat:'System Design',title:'URL Shortener Design',excerpt:'Complete system design interview walkthrough from requirements to architecture.',author:'Neha R.',time:'12 min'}];
+
+let curLang='python',curTopic=0,curDSA=0,curProbFilter='all',solveProb=null,completed=new Set(),quizAns=null,solved=new Set([1,2,3,7,10,13,18]);
+
+function show(id,btn){document.querySelectorAll('.page').forEach(p=>p.classList.remove('on'));document.getElementById(id).classList.add('on');document.querySelectorAll('.ntab').forEach(t=>t.classList.remove('active'));if(btn)btn.classList.add('active');if(id==='languages')initLang();if(id==='dsa')initDSA();if(id==='practice')initPractice();if(id==='compiler')initCompiler();if(id==='dashboard')initDash();if(id==='blog')initBlog();}
+function switchLang(l){curLang=l;curTopic=0;initLang();}
+function initLang(){const L=LANGS[curLang];let sb=`<div style="padding:8px 14px;border-bottom:1px solid var(--border);margin-bottom:4px"><select class="lang-sel" style="width:100%;padding:6px" onchange="switchLang(this.value)">`;Object.entries(LANGS).forEach(([k,v])=>sb+=`<option value="${k}"${k===curLang?' selected':''}>${v.name}</option>`);sb+=`</select></div><div class="sb-section">${L.name} — ${L.topics.length} Topics</div>`;L.topics.forEach((t,i)=>{const on=i===curTopic?' on':'',done=(t.done||completed.has(t.id))?' done':'';sb+=`<div class="sb-item${on}${done}" onclick="showTopic(${i})"><span class="sb-dot"></span>${t.title}</div>`;});document.getElementById('lang-sidebar').innerHTML=sb;renderTopic();}
+function showTopic(i){curTopic=i;quizAns=null;initLang();}
+function renderTopic(){const L=LANGS[curLang],t=L.topics[curTopic];let quiz='';if(t.quiz){quiz=`<div class="quiz"><h4>&#x1F4A1; Quick Check</h4><p style="font-size:12px;margin-bottom:10px">${t.quiz.q}</p>${t.quiz.opts.map((o,i)=>`<div class="qopt" onclick="checkQuiz(this,${i},${t.quiz.ans})">${o}</div>`).join('')}</div>`;}let concept='';if(t.concept)concept=`<div class="concept"><h4>Key Insight</h4><p>${t.concept}</p></div>`;document.getElementById('lang-content').innerHTML=`<div class="topic-head"><div class="bread">${L.name} &rsaquo; ${t.title}</div><h2>${t.h}</h2><p>${t.p}</p></div>${concept}<div class="code-block"><div class="code-head"><span class="lang-badge">${L.name}</span></div><div class="code-body mono">${t.code}</div></div><div class="out-block"><div class="out-lbl">&#x25B6; Output</div><span class="mono" style="color:#98c379">${t.out}</span></div>${quiz}<div class="nav-btns">${curTopic>0?`<button class="nbtn" onclick="showTopic(${curTopic-1})">&#x2190; Previous</button>`:''}${curTopic<L.topics.length-1?`<button class="nbtn nbtn-p" onclick="showTopic(${curTopic+1})">Next &#x2192;</button>`:`<button class="nbtn nbtn-p" onclick="show('practice',null)">Practice Problems &#x2192;</button>`}</div>`;}
+function checkQuiz(el,chosen,ans){document.querySelectorAll('.qopt').forEach((o,i)=>{o.style.pointerEvents='none';if(i===ans)o.classList.add('correct');else if(i===chosen&&chosen!==ans)o.classList.add('wrong');});}
+function initDSA(){let sb='<div style="padding:10px 14px;font-size:10px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.1em;border-bottom:1px solid var(--border)">DSA Topics</div>';DSA.forEach((d,i)=>sb+=`<div class="sb-item${i===curDSA?' on':''}" onclick="showDSA(${i})" style="justify-content:space-between"><span>${d.icon} ${d.name}</span><span style="font-size:10px;background:var(--bg3);padding:1px 6px;border-radius:10px;color:var(--text3)">${d.count}</span></div>`);document.getElementById('dsa-sidebar').innerHTML=sb;renderDSA();}
+function showDSA(i){curDSA=i;initDSA();}
+function renderDSA(){const d=DSA[curDSA];const tcRows=Object.entries(d.tc).map(([op,val])=>`<tr><td style="padding:6px 12px;border:1px solid var(--border)">${op}</td><td style="padding:6px 12px;border:1px solid var(--border);color:${val.startsWith('O(1)')?'var(--green)':val.startsWith('O(log')?'var(--teal)':'var(--amber)'};font-family:monospace">${val}</td></tr>`).join('');document.getElementById('dsa-content').innerHTML=`<div class="topic-head"><h2>${d.icon} ${d.name}</h2><p>${d.theory}</p></div><div class="code-block"><div class="code-head"><span class="lang-badge">Python</span></div><div class="code-body mono">${d.code}</div></div><div class="out-block"><div class="out-lbl">&#x25B6; Output</div><span class="mono" style="color:#98c379">${d.out}</span></div><h4 style="font-size:13px;font-weight:700;margin:18px 0 8px">Time Complexity</h4><table style="border-collapse:collapse;font-size:12px;width:100%;max-width:380px">${tcRows}</table><div style="margin-top:20px;background:var(--card);border:1px solid var(--border);border-radius:10px;padding:16px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px"><div><div style="font-size:13px;font-weight:700">Practice ${d.count} ${d.name} problems</div></div><button class="btn btn-primary" onclick="show('practice',null)">Solve Now &#x2192;</button></div>`;}
+function initPractice(){renderProbs();}
+function renderProbs(){let data=PROBLEMS;if(curProbFilter!=='all')data=data.filter(p=>p.diff===curProbFilter||p.tags.some(t=>t===curProbFilter||t.toLowerCase().includes(curProbFilter.toLowerCase())));document.getElementById('pcount').textContent=`${data.length} problems`;document.getElementById('prob-tbody').innerHTML=data.map(p=>`<tr><td><div class="status-dot ${solved.has(p.id)?'s-done':'s-todo'}">${solved.has(p.id)?'&#x2713;':''}</div></td><td style="color:var(--text3);font-size:11px">${p.id}</td><td><span class="prob-link" onclick="openSolve(${p.id})">${p.title}</span></td><td><span class="diff diff-${p.diff==='Easy'?'easy':p.diff==='Medium'?'med':'hard'}">${p.diff}</span></td><td>${p.tags.slice(0,2).map(t=>`<span class="chip">${t}</span>`).join('')}</td><td style="color:var(--text2)">${p.acc}</td></tr>`).join('');}
+function filterProbs(f,btn){curProbFilter=f;document.querySelectorAll('.filt').forEach(b=>b.classList.remove('on'));if(btn)btn.classList.add('on');renderProbs();}
+function searchProbs(v){const q=v.toLowerCase();const data=PROBLEMS.filter(p=>p.title.toLowerCase().includes(q)||p.tags.some(t=>t.toLowerCase().includes(q)));document.getElementById('prob-tbody').innerHTML=data.map(p=>`<tr><td><div class="status-dot ${solved.has(p.id)?'s-done':'s-todo'}">${solved.has(p.id)?'&#x2713;':''}</div></td><td style="color:var(--text3);font-size:11px">${p.id}</td><td><span class="prob-link" onclick="openSolve(${p.id})">${p.title}</span></td><td><span class="diff diff-${p.diff==='Easy'?'easy':p.diff==='Medium'?'med':'hard'}">${p.diff}</span></td><td>${p.tags.slice(0,2).map(t=>`<span class="chip">${t}</span>`).join('')}</td><td style="color:var(--text2)">${p.acc}</td></tr>`).join('');}
+function openSolve(id){const p=PROBLEMS.find(x=>x.id===id);if(!p)return;solveProb=p;document.getElementById('modal-title').textContent=p.title;const md=document.getElementById('modal-diff');md.className=`diff diff-${p.diff==='Easy'?'easy':p.diff==='Medium'?'med':'hard'}`;md.textContent=p.diff;document.getElementById('modal-h3').textContent=p.title;document.getElementById('modal-tags').innerHTML=p.tags.map(t=>`<span class="chip" style="margin:2px">${t}</span>`).join('');document.getElementById('modal-body').innerHTML=`<p style="margin-bottom:14px">${p.desc}</p><h4>Example</h4><div class="ex-box mono">${p.ex}</div><h4 style="margin-top:14px">Constraints</h4><div class="ex-box mono">0 &le; nums.length &le; 10&#x2074;<br>-10&#x2079; &le; nums[i] &le; 10&#x2079;</div>`;updateStarter();document.getElementById('result-pane').innerHTML='<div style="color:var(--text3);font-size:11px">Run your code to see results here...</div>';document.getElementById('solve-modal').classList.add('open');}
+function closeModal(){document.getElementById('solve-modal').classList.remove('open');}
+function updateStarter(){if(!solveProb)return;const lang=document.getElementById('solve-lang').value;document.getElementById('solve-ta').value=STARTERS[lang]?.(solveProb.title)||'// write solution here';}
+function runSolve(submit){const rp=document.getElementById('result-pane');rp.innerHTML=`<div style="color:var(--accent);font-size:12px"><span class="spin">&#x21BB;</span> Running test cases...</div>`;setTimeout(()=>{if(submit){const pass=Math.random()>.25;if(pass){solved.add(solveProb.id);renderProbs();rp.innerHTML=`<div class="r-pass">&#x2714; Accepted</div><div style="font-size:11px;color:var(--text2);margin-bottom:8px">Runtime: ${Math.floor(Math.random()*60+20)}ms &middot; Memory: ${Math.floor(Math.random()*8+40)}MB</div>`+['[2,7,11,15] target=9','[3,2,4] target=6','[3,3] target=6','[-1,2,3] target=2'].map(tc=>`<div class="tc-row"><span class="tc-ok">&#x2713;</span> ${tc}</div>`).join('');}else{rp.innerHTML=`<div class="r-fail">&#x2717; Wrong Answer</div><div style="font-size:11px;color:var(--text2);margin-bottom:8px">Failed on test case 3 of 5</div>`+['[2,7,11,15]','[3,2,4]'].map(tc=>`<div class="tc-row"><span class="tc-ok">&#x2713;</span> ${tc}</div>`).join('')+`<div class="tc-row"><span class="tc-no">&#x2717;</span> [3,3] target=6 &mdash; Expected: [0,1], Got: null</div>`;}}else{rp.innerHTML=`<div class="r-pass">&#x2714; Sample tests passed</div>`+['[2,7,11,15] target=9 &rarr; [0,1]','[3,2,4] target=6 &rarr; [1,2]'].map(tc=>`<div class="tc-row"><span class="tc-ok">&#x2713;</span> ${tc}</div>`).join('');}},1200);}
+function initCompiler(){loadTpl();}
+function loadTpl(){const lang=document.getElementById('c-lang').value;document.getElementById('editor').value=TEMPLATES[lang]||TEMPLATES.python;updateLnums();document.getElementById('out-output').innerHTML='<div class="con-sys">// Template loaded. Press Run Code or Ctrl+Enter.</div>';}
+function editorTab(e){if(e.key==='Tab'){e.preventDefault();const ta=e.target,s=ta.selectionStart;ta.value=ta.value.substring(0,s)+'  '+ta.value.substring(ta.selectionEnd);ta.selectionStart=ta.selectionEnd=s+2;}if(e.ctrlKey&&e.key==='Enter'){e.preventDefault();runCode();}}
+function updateLnums(){const lines=(document.getElementById('editor').value.match(/\n/g)||[]).length+1;document.getElementById('lnums').innerHTML=Array.from({length:lines},(_,i)=>i+1).join('\n');}
+function syncLnums(el){document.getElementById('lnums').scrollTop=el.scrollTop;}
+function clearEditor(){document.getElementById('editor').value='';updateLnums();}
+function switchOTab(tab,el){document.querySelectorAll('.otab').forEach(t=>t.classList.remove('on'));if(el)el.classList.add('on');document.getElementById('out-output').style.display=tab==='output'?'block':'none';document.getElementById('out-input').style.display=tab==='input'?'flex':'none';document.getElementById('out-info').style.display=tab==='info'?'block':'none';}
+function runCode(){const btn=document.getElementById('run-code-btn');btn.disabled=true;btn.innerHTML='<span class="spin">&#x21BB;</span> Running...';const lang=document.getElementById('c-lang').value;const stdin=(document.getElementById('stdin-quick').value||document.getElementById('stdin-main').value||'5').trim();const n=parseInt(stdin)||5;const out=document.getElementById('out-output');out.innerHTML='<div class="con-sys">// Submitting to Judge0 API...</div>';setTimeout(()=>{btn.disabled=false;btn.innerHTML='&#x25B6; Run Code';out.innerHTML=`<div class="con-sys">// Done &middot; Runtime: ${Math.floor(Math.random()*80+15)}ms &middot; Memory: ${Math.floor(Math.random()*5+8)}MB</div>\n<div class="con-sys">---</div>\n<div class="con-out">Square of ${n} = ${n*n}</div>\n<div class="con-sys">// Exit code 0</div>`;},1400+Math.random()*600);}
+function initDash(){const langs=[{n:'Python',p:78},{n:'C++',p:55},{n:'Java',p:40},{n:'C',p:62},{n:'JavaScript',p:33}];document.getElementById('lang-prog').innerHTML=langs.map(l=>`<div class="prog-row"><span class="prog-lang">${l.n}</span><div class="prog-bar-wrap"><div class="prog-bar" style="width:${l.p}%"></div></div><span class="prog-pct">${l.p}%</span></div>`).join('');const lb=[{rank:1,cls:'gold',name:'CodeNinja_07',score:2847,init:'CN'},{rank:2,cls:'silver',name:'algo_master',score:2691,init:'AM'},{rank:3,cls:'bronze',name:'priya_dev',score:2543,init:'PD'},{rank:4,cls:'',name:'rahul_cpp',score:2388,init:'RC'},{rank:5,cls:'',name:'sneha_js',score:2201,init:'SJ'},{rank:842,cls:'',name:'You (Me)',score:1024,init:'ME',you:true}];document.getElementById('lb').innerHTML=lb.map(u=>`<div class="lb-row"${u.you?' style="background:rgba(79,142,247,.07);border-radius:6px;padding:7px 6px"':''}><span class="lb-rank ${u.cls}">${u.rank}</span><div class="lb-av"${u.you?' style="background:linear-gradient(135deg,#00c9a7,#4f8ef7)"':''}>${u.init}</div><span class="lb-name">${u.name}</span><span class="lb-score">${u.score}</span></div>`).join('');const cells=Array.from({length:52*7},()=>{const r=Math.random();return r<.55?0:r<.72?1:r<.85?2:r<.93?3:4;});const cols=[];for(let c=0;c<52;c++){let col='<div class="hm-col">';for(let r=0;r<7;r++)col+=`<div class="hc hc${cells[c*7+r]}"></div>`;col+='</div>';cols.push(col);}document.getElementById('heatmap').innerHTML=cols.join('');}
+function initBlog(){document.getElementById('blog-grid').innerHTML=BLOGS.map(b=>`<div class="blog-card"><div class="blog-img">${b.icon}</div><div class="blog-body"><div class="blog-cat">${b.cat}</div><div class="blog-title">${b.title}</div><div class="blog-excerpt">${b.excerpt}</div><div class="blog-foot"><div class="blog-av">${b.author[0]}</div><span>${b.author}</span><span>&middot;</span><span>${b.time} read</span></div></div></div>`).join('');}
+document.addEventListener('keydown',e=>{if(e.key==='Escape')closeModal();});
+
+</script>
+</body>
+</html>
